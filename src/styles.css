@@ -1,0 +1,310 @@
+:root {
+  color: #17201c;
+  background: #f4f1ea;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button,
+.primary-link {
+  border: 1px solid #17201c;
+  background: #ffffff;
+  color: #17201c;
+  border-radius: 6px;
+  padding: 0.55rem 0.8rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+button.primary,
+.primary-link {
+  background: #17201c;
+  color: #fff;
+}
+
+button.danger {
+  border-color: #9f2d20;
+  color: #9f2d20;
+}
+
+.login-shell {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+}
+
+.login-panel {
+  width: min(420px, calc(100vw - 32px));
+  border: 1px solid #d8d0c0;
+  background: #fffaf1;
+  border-radius: 8px;
+  padding: 28px;
+}
+
+.admin-shell {
+  min-height: 100vh;
+  padding: 18px;
+}
+
+.topbar,
+.status-row,
+.workspace {
+  max-width: 1680px;
+  margin: 0 auto;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #6b665d;
+}
+
+.topbar-actions,
+.status-row,
+.list-actions,
+.editor-head,
+.preview-actions,
+.publish-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.status-row {
+  min-height: 44px;
+  margin-top: 10px;
+  padding: 10px 0;
+}
+
+.status-row strong,
+.error {
+  color: #9f2d20;
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: 290px minmax(460px, 1fr) minmax(360px, 0.9fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.project-list,
+.editor,
+.preview {
+  border: 1px solid #d8d0c0;
+  background: #fffaf1;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.project-list {
+  display: grid;
+  gap: 8px;
+}
+
+.project-list > button {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 10px;
+  align-items: center;
+  text-align: left;
+  padding: 8px;
+}
+
+.project-list button.active {
+  background: #17201c;
+  color: #fff;
+}
+
+.project-list img {
+  width: 64px;
+  height: 44px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.project-list small {
+  display: block;
+  margin-top: 4px;
+  color: inherit;
+  opacity: 0.7;
+}
+
+.editor-head {
+  justify-content: space-between;
+  border-bottom: 1px solid #e2dacb;
+  padding-bottom: 10px;
+}
+
+.editor h2,
+.editor h3 {
+  margin: 0;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+label {
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.wide {
+  grid-column: 1 / -1;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  border: 1px solid #d8d0c0;
+  border-radius: 6px;
+  background: #fff;
+  padding: 9px 10px;
+}
+
+textarea {
+  min-height: 88px;
+  resize: vertical;
+}
+
+.media-editor {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 12px;
+  margin: 16px 0;
+  align-items: start;
+}
+
+.media-editor img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.upload input {
+  margin-top: 8px;
+}
+
+.tabs-editor,
+.gallery-editor {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.tabs-editor label,
+.gallery-editor label {
+  border: 1px solid #e2dacb;
+  border-radius: 6px;
+  padding: 10px;
+}
+
+.sync-note {
+  color: #6b665d;
+  font-size: 13px;
+}
+
+.preview iframe {
+  width: 100%;
+  height: 62vh;
+  border: 1px solid #d8d0c0;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.preview iframe.mobile {
+  width: min(390px, 100%);
+  display: block;
+  margin: 0 auto;
+}
+
+.preview-actions {
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.preview-actions .active {
+  background: #17201c;
+  color: #fff;
+}
+
+.publish-actions {
+  margin-top: 10px;
+}
+
+.diff {
+  overflow: auto;
+  max-height: 160px;
+  margin-top: 10px;
+  border-radius: 6px;
+  background: #17201c;
+  color: #d8f7ec;
+  padding: 10px;
+  font-size: 12px;
+}
+
+.audit-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.audit-list div {
+  border: 1px solid #e2dacb;
+  border-radius: 6px;
+  padding: 8px;
+}
+
+.audit-list span,
+.audit-list small {
+  display: block;
+  color: #6b665d;
+}
+
+@media (max-width: 1180px) {
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,912 @@
+{
+  "version": 1,
+  "updatedAt": "2026-07-09T00:00:00.000Z",
+  "contact": {
+    "githubUrl": "https://github.com/Andresun-hyper",
+    "wechatId": "s18715111179",
+    "resumeFile": "./孙启圣_工业设计实习生_简历_红点2026.pdf"
+  },
+  "trackLabels": {
+    "all": {
+      "label": "All Works",
+      "caption": "完整浏览四个项目"
+    },
+    "industrial": {
+      "label": "Industrial",
+      "caption": "产品结构、CMF、场景和渲染证据"
+    },
+    "ux": {
+      "label": "UX Prototype",
+      "caption": "用户流程、交互原型和可运行演示"
+    },
+    "ai": {
+      "label": "AI Workflow",
+      "caption": "AI 辅助建模、渲染和视频表达流程"
+    }
+  },
+  "slides": [
+    {
+      "id": "cover",
+      "kind": "cover",
+      "title": "孙启圣作品集",
+      "subtitle": "ANDRE SUN PORTFOLIO",
+      "accent": "teal",
+      "summary": "Product & Experience Design Portfolio",
+      "tags": [
+        "Industrial Design",
+        "UX Prototype",
+        "AI-assisted Workflow"
+      ]
+    },
+    {
+      "id": "contents",
+      "kind": "contents",
+      "title": "CONTENTS",
+      "subtitle": "项目导航 / Hiring Evidence",
+      "accent": "gold"
+    },
+    {
+      "id": "droplet",
+      "kind": "project",
+      "title": "DROPLET",
+      "subtitle": "宠物运动水杯",
+      "range": "P.03-07",
+      "accent": "black",
+      "cover": "./droplet-source-render-red-dot-2026.png",
+      "summary": "Red Dot Award: Design Concept Winner 2026 项目，面向户外运动场景的宠物补水产品，强调携带、饮水、透明可视和电解质补给的连续体验。",
+      "role": "工业设计 / 场景研究 / 产品渲染与 AIGC 表达",
+      "problem": "户外运动后的宠物容易出现饮水不足、补给不便和携带负担，普通水杯难以兼顾卫生可视、便携和营养补给。",
+      "evidence": [
+        "产品主渲染展示使用姿态和造型语言",
+        "草图与流程图说明从问题到结构的推导",
+        "细节图表现饮水、透明水路和握持关系"
+      ],
+      "output": "一套获得 Red Dot Award: Design Concept Winner 2026 的宠物运动水杯概念，覆盖使用流程、结构表达、外观渲染和场景化展示。",
+      "tools": "Sketch / Rhino / KeyShot / Midjourney / Photoshop",
+      "aiRole": "AI 用于快速探索产品场景、材质氛围和展示页视觉，再结合草图与结构图收敛方案。",
+      "tags": [
+        "RED DOT 2026",
+        "PET PRODUCT",
+        "SCENARIO RESEARCH",
+        "PRODUCT RENDER"
+      ],
+      "jobTracks": [
+        "industrial",
+        "ai"
+      ],
+      "gallery": [
+        {
+          "src": "./droplet-source-render-red-dot-2026.png",
+          "label": "SOURCE RENDER",
+          "caption": "主渲染用于呈现产品姿态、比例、户外运动情境和 Red Dot 2026 获奖标识。",
+          "evidenceType": "Hero render"
+        },
+        {
+          "src": "./droplet-gallery-1.webp",
+          "label": "A4 LAYOUT 1",
+          "caption": "参赛图板 1 展示设计理念与整体造型。",
+          "evidenceType": "Render evidence"
+        },
+        {
+          "src": "./droplet-gallery-2.webp",
+          "label": "A4 LAYOUT 2",
+          "caption": "参赛图板 2 表现功能细节与手持体验。",
+          "evidenceType": "Render evidence"
+        },
+        {
+          "src": "./droplet-gallery-3.webp",
+          "label": "A4 LAYOUT 3",
+          "caption": "参赛图板 3 展现使用场景与色彩搭配。",
+          "evidenceType": "Usage evidence"
+        },
+        {
+          "src": "./droplet-gallery-4.webp",
+          "label": "A4 LAYOUT 4",
+          "caption": "参赛图板 4 阐述技术细节与结构推导。",
+          "evidenceType": "Usage evidence"
+        },
+        {
+          "src": "./droplet-gallery-5.webp",
+          "label": "A4 LAYOUT 5",
+          "caption": "参赛图板 5 说明内部气流、透明水路与功能细节。",
+          "evidenceType": "Usage evidence"
+        },
+        {
+          "src": "./droplet-gallery-6.webp",
+          "label": "A4 LAYOUT 6",
+          "caption": "参赛图板 6 强调便携性与户外携带场景。",
+          "evidenceType": "Usage evidence"
+        }
+      ],
+      "tabs": [
+        {
+          "id": "overview",
+          "label": "Overview",
+          "title": "户外运动后的宠物补水体验",
+          "body": "DROPLET 把便携补水、营养补给和清洁可视压缩到单一产品动作中。",
+          "bullets": [
+            "对象：户外运动宠物和主人",
+            "目标：减少补水和携带负担",
+            "产出：产品概念和场景渲染"
+          ]
+        },
+        {
+          "id": "process",
+          "label": "Process",
+          "title": "场景先行的产品推导",
+          "body": "从户外运动后的脱水风险切入，推导出握持、饮水、透明水路和补给结构。",
+          "bullets": [
+            "场景痛点梳理",
+            "草图形态探索",
+            "一体化使用流程"
+          ]
+        },
+        {
+          "id": "output",
+          "label": "Output",
+          "title": "从草图到渲染的完整表达",
+          "body": "最终页面同时呈现草图、流程、渲染和场景，使产品方案更容易被岗位筛选者判断。",
+          "bullets": [
+            "草图板",
+            "产品渲染",
+            "使用流程图"
+          ]
+        },
+        {
+          "id": "ai",
+          "label": "AI Workflow",
+          "title": "AI 加速视觉探索",
+          "body": "AI 辅助建立产品展示氛围和视觉叙事，再由产品逻辑筛选可用方向。",
+          "bullets": [
+            "场景氛围生成",
+            "材质和光影探索",
+            "与手绘和建模结果交叉验证"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wrist",
+      "kind": "project",
+      "title": "WRIST REHABILITATION",
+      "subtitle": "腕部康复评估设计",
+      "range": "P.08-12",
+      "accent": "teal",
+      "cover": "./rehab-phone-mockup.png",
+      "video": "./fracture-rehab-demo.mp4",
+      "summary": "面向居家康复阶段的交互原型，以安全确认、动作反馈和训练结果可视化构成完整体验闭环。",
+      "role": "UX 原型设计 / 本地 Demo 搭建 / 交互流程验证",
+      "problem": "骨折或腕部损伤用户在居家训练中缺少即时反馈，容易出现动作不标准、训练中断和恢复结果不可见的问题。",
+      "evidence": [
+        "安全确认与训练前校准流程",
+        "动作识别评分与结果反馈界面",
+        "可播放的本地样机视频和多屏 UI 证据"
+      ],
+      "output": "一套可演示的腕部康复训练 App 原型，覆盖开始训练、动作反馈、结果复盘和任务延展。",
+      "tools": "React Demo / Vibe Coding / UI Mockup / Video Prototype",
+      "aiRole": "AI 用于辅助生成界面素材、演示叙事和快速迭代视觉状态，最终流程由交互逻辑约束。",
+      "tags": [
+        "UX PROTOTYPE",
+        "HEALTH REHAB",
+        "LOCAL DEMO",
+        "FLOW + UI + VIDEO"
+      ],
+      "jobTracks": [
+        "ux",
+        "ai"
+      ],
+      "gallery": [
+        {
+          "src": "./rehab-source-render.png",
+          "label": "UI SOURCE",
+          "caption": "康复 App 的核心界面视觉，证明原型不是静态概念，而是围绕训练流程组织的界面系统。",
+          "evidenceType": "Prototype evidence"
+        },
+        {
+          "src": "./fracture-rehab-flow.jpg",
+          "label": "4 STEP FLOW",
+          "caption": "四步训练路径用于说明用户如何从校准进入训练，再回到结果反馈。",
+          "evidenceType": "Flow evidence"
+        },
+        {
+          "src": "./fracture-rehab-board.jpg",
+          "label": "RESEARCH BOARD",
+          "caption": "问题拆解和前期研究板，说明康复训练的约束、风险和机会点。",
+          "evidenceType": "Research evidence"
+        },
+        {
+          "src": "./fracture-rehab-demo.mp4",
+          "label": "DEMO VIDEO",
+          "type": "video",
+          "caption": "本地样机展示视频，用于验证界面节奏、交互反馈和演示完整度。",
+          "evidenceType": "Motion evidence"
+        }
+      ],
+      "tabs": [
+        {
+          "id": "overview",
+          "label": "Overview",
+          "title": "居家康复的可见反馈",
+          "body": "项目把康复训练从“完成动作”转化为“可判断、可记录、可复盘”的交互流程。",
+          "bullets": [
+            "目标用户：居家康复训练人群",
+            "核心价值：降低训练不确定性",
+            "交付物：可播放 App 原型和流程页"
+          ]
+        },
+        {
+          "id": "process",
+          "label": "Process",
+          "title": "从安全校准到结果复盘",
+          "body": "流程优先处理康复产品最关键的安全感，再进入动作识别和训练反馈。",
+          "bullets": [
+            "训练前检查和校准",
+            "动作过程中的反馈节奏",
+            "训练后结果和任务映射"
+          ]
+        },
+        {
+          "id": "output",
+          "label": "Output",
+          "title": "Demo 可以直接说明体验",
+          "body": "图片、流程图和视频共同组成招聘场景下可快速判断的 UX 证据。",
+          "bullets": [
+            "界面系统",
+            "四步用户流",
+            "可播放视频样机"
+          ]
+        },
+        {
+          "id": "ai",
+          "label": "AI Workflow",
+          "title": "AI 作为表达和迭代工具",
+          "body": "AI 辅助生成演示状态和视觉资产，但交互逻辑、流程结构和内容判断仍由设计目标决定。",
+          "bullets": [
+            "快速生成界面情境",
+            "辅助视频表达",
+            "保留可解释的流程结构"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "aquara",
+      "kind": "project",
+      "title": "AQUARA",
+      "subtitle": "鱼缸清洁机器人",
+      "range": "P.13-17",
+      "accent": "gold",
+      "cover": "./aqua-robot-cover.webp",
+      "summary": "围绕中大型鱼缸清洁痛点，提出自动爬壁清洁、回仓充电和自清洁结合的产品方案。",
+      "role": "工业设计 / 产品策略 / 结构与 CMF 表达",
+      "problem": "中大型鱼缸绿藻积累快，人工清洁频率高且容易打扰鱼群，用户需要低干预、稳定维护的清洁方案。",
+      "evidence": [
+        "六视图用于验证形体和比例",
+        "系统图说明回仓、自清洁与工作路径",
+        "细节渲染呈现结构、材质和使用场景"
+      ],
+      "output": "一套面向家庭水族场景的机器人产品概念，包含主机、充电回仓、清洁路径和视觉渲染。",
+      "tools": "Rhino / KeyShot / Photoshop / AI-assisted Rendering",
+      "aiRole": "AI 用于辅助渲染气质、构图探索和视觉表达，核心产品逻辑来自场景痛点和结构设定。",
+      "tags": [
+        "INDUSTRIAL DESIGN",
+        "ROBOTICS",
+        "CMF",
+        "AI RENDERING"
+      ],
+      "jobTracks": [
+        "industrial",
+        "ai"
+      ],
+      "gallery": [
+        {
+          "src": "./aqua-robot-views.webp",
+          "label": "SIX VIEWS",
+          "caption": "六视图展示产品比例、轮廓和关键面关系，是工业设计岗位最直接的形体证据。",
+          "evidenceType": "Form evidence"
+        },
+        {
+          "src": "./aqua-robot-system.webp",
+          "label": "SYSTEM CARD",
+          "caption": "系统卡片说明清洁机器人、回仓和使用场景之间的产品逻辑。",
+          "evidenceType": "System evidence"
+        },
+        {
+          "src": "./aqua-robot-detail.webp",
+          "label": "DETAIL RENDER",
+          "caption": "细节渲染呈现结构分件、材质对比和产品识别特征。",
+          "evidenceType": "CMF evidence"
+        }
+      ],
+      "tabs": [
+        {
+          "id": "overview",
+          "label": "Overview",
+          "title": "让鱼缸维护变成低干预流程",
+          "body": "AQUARA 把清洁、回仓和自清洁整合成一个家庭水族维护系统。",
+          "bullets": [
+            "场景：1.2 米以上中大型鱼缸",
+            "对象：绿藻、玻璃壁、水质维护",
+            "产出：机器人和回仓系统概念"
+          ]
+        },
+        {
+          "id": "process",
+          "label": "Process",
+          "title": "从痛点到结构路径",
+          "body": "项目优先建立工作路径和使用边界，再通过形体推敲表达产品可信度。",
+          "bullets": [
+            "清洁路径推演",
+            "回仓和自清洁逻辑",
+            "外观比例和结构分件"
+          ]
+        },
+        {
+          "id": "output",
+          "label": "Output",
+          "title": "工业设计证据完整",
+          "body": "六视图、系统卡和细节渲染共同支撑产品概念，而不是单张效果图。",
+          "bullets": [
+            "六视图",
+            "系统说明",
+            "细节和材质渲染"
+          ]
+        },
+        {
+          "id": "ai",
+          "label": "AI Workflow",
+          "title": "AI 辅助表达但不替代结构",
+          "body": "AI 用于提升渲染表达和场景气质，产品结构和功能路径在设计判断中先行。",
+          "bullets": [
+            "渲染氛围探索",
+            "构图和材质迭代",
+            "最终页面回到产品证据"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cookware",
+      "kind": "project",
+      "title": "OUTDOOR COOKWARE",
+      "subtitle": "家庭户外炊具设计",
+      "range": "P.18-22",
+      "accent": "gold",
+      "cover": "./cookware-hero.webp",
+      "summary": "面向家庭户外烹饪场景的炊具产品，围绕安全、便携、收纳和多功能烹饪建立完整的产品方案。",
+      "role": "本科毕业设计 / 工业设计 / 产品建模与渲染 / 展板表达",
+      "problem": "家庭用户在户外野炊时会遇到传统明火炉具安全隐患、分体式套锅携带收纳繁琐、组件易丢失等问题。",
+      "evidence": [
+        "新渲染图呈现产品主体、套锅和户外使用情境",
+        "展板裁剪保留草图推导、细节展示和场景说明",
+        "工程图说明尺寸、结构关系和可制造性表达"
+      ],
+      "output": "一套家庭户外炊具概念，覆盖产品外观、套锅收纳、香料/配件模块、工程尺寸、展板和论文说明。",
+      "tools": "Rhino / KeyShot / Photoshop / Product Board / Thesis Writing",
+      "aiRole": "AI 用于辅助提升渲染表达和户外场景氛围，产品结构、论文论证和展板组织来自毕业设计过程。",
+      "tags": [
+        "GRADUATION DESIGN",
+        "OUTDOOR COOKWARE",
+        "PRODUCT RENDER",
+        "ENGINEERING DRAWING"
+      ],
+      "jobTracks": [
+        "industrial",
+        "ai"
+      ],
+      "gallery": [
+        {
+          "src": "./cookware-context.webp",
+          "label": "CONTEXT RENDER",
+          "caption": "户外场景渲染用于说明家庭露营、桌面烹饪和产品使用环境之间的关系。",
+          "evidenceType": "Scenario render"
+        },
+        {
+          "src": "./cookware-studio.webp",
+          "label": "STUDIO RENDER",
+          "caption": "工作室角度展示主体、内胆套锅、侧向配件托盘和整体黑白 CMF。",
+          "evidenceType": "Product render"
+        },
+        {
+          "src": "./cookware-board-sketch.webp",
+          "label": "SKETCH BOARD",
+          "caption": "从展板中裁出的草图过程，保留造型推导、套锅结构和外壳比例探索。",
+          "evidenceType": "Process evidence"
+        },
+        {
+          "src": "./cookware-engineering.webp",
+          "label": "ENGINEERING",
+          "caption": "工程图呈现产品主视、侧视、俯视和关键尺寸，补足渲染之外的结构证据。",
+          "evidenceType": "Drawing evidence"
+        }
+      ],
+      "tabs": [
+        {
+          "id": "overview",
+          "label": "Overview",
+          "title": "面向家庭户外烹饪的安全便携炊具",
+          "body": "项目从家庭户外野炊场景切入，把安全性、便携收纳和多功能烹饪整合进一个炊具系统。",
+          "bullets": [
+            "目标用户：家庭露营和户外野餐用户",
+            "核心价值：降低明火风险与组件管理负担",
+            "产出：产品方案、工程图、展板和论文说明"
+          ]
+        },
+        {
+          "id": "process",
+          "label": "Process",
+          "title": "从论文问题到产品结构",
+          "body": "论文和设计过程共同指向传统明火炉具风险、套锅携带繁琐和组件丢失等问题，再转化为套锅收纳、配件托盘和一体化外壳。",
+          "bullets": [
+            "竞品和用户问题梳理",
+            "草图形态与功能模块推导",
+            "展板中保留尺寸、细节和场景证据"
+          ]
+        },
+        {
+          "id": "output",
+          "label": "Output",
+          "title": "渲染、展板和工程图共同说明方案",
+          "body": "新渲染作为主视觉，展板裁剪提供过程证据，工程图补充尺寸和结构表达，避免只依赖单张效果图。",
+          "bullets": [
+            "主产品渲染",
+            "展板过程裁剪",
+            "工程尺寸图"
+          ]
+        },
+        {
+          "id": "ai",
+          "label": "AI Workflow",
+          "title": "AI 用于强化场景表达",
+          "body": "AI 主要参与渲染清晰度和户外氛围优化，最终页面仍以建模、展板和论文内容为判断依据。",
+          "bullets": [
+            "提升产品渲染质量",
+            "辅助户外场景氛围",
+            "保留结构与论文证据"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "contact",
+      "kind": "contact",
+      "title": "CONTACT",
+      "subtitle": "联系 / 个人信息",
+      "accent": "teal",
+      "summary": "孙启圣 / 产品设计硕士在读 / AI 视觉与交互原型方向",
+      "tags": [
+        "Rhino",
+        "KeyShot",
+        "Blender",
+        "Photoshop",
+        "Illustrator",
+        "Midjourney",
+        "AI 视频生成",
+        "后期制作"
+      ]
+    }
+  ],
+  "antigravity": {
+    "searchSuggestions": [
+      "孙启圣 PDF Resume",
+      "DROPLET Bottle",
+      "Wrist Rehabilitation",
+      "AQUARA Robot",
+      "Outdoor Cookware",
+      "Industrial Design",
+      "UX Prototype",
+      "AI Workflow"
+    ],
+    "skillTags": [
+      {
+        "title": "Industrial Design",
+        "detail": "form / CMF / systems"
+      },
+      {
+        "title": "UX Prototype",
+        "detail": "flow / UI / demo"
+      },
+      {
+        "title": "AI Workflow",
+        "detail": "visual iteration"
+      },
+      {
+        "title": "Rhino / KeyShot",
+        "detail": "product rendering"
+      },
+      {
+        "title": "React Demo",
+        "detail": "interactive proof"
+      },
+      {
+        "title": "Portfolio Storytelling",
+        "detail": "hiring evidence"
+      }
+    ],
+    "projects": [
+      {
+        "id": "droplet",
+        "title": "DROPLET",
+        "subtitle": "Outdoor pet hydration product",
+        "range": "P.03-07",
+        "accent": "black",
+        "cover": "./droplet-source-render-red-dot-2026.png",
+        "summary": "A Red Dot Award: Design Concept Winner 2026 pet hydration product for outdoor exercise, focused on carry, drinking, visible hygiene, and electrolyte supplement scenarios.",
+        "role": "Industrial design / scenario research / product rendering and AIGC expression",
+        "problem": "Outdoor exercise creates hydration, hygiene, and carry problems for pets and owners that ordinary bottles do not solve cleanly.",
+        "output": "An award-recognized product concept covering usage flow, structural expression, rendering, and scenario presentation.",
+        "tools": "Sketch / Rhino / KeyShot / Midjourney / Photoshop",
+        "aiRole": "AI accelerated scenario mood and material exploration, then sketches and structure diagrams narrowed the final direction.",
+        "tags": [
+          "RED DOT 2026",
+          "PET PRODUCT",
+          "SCENARIO RESEARCH",
+          "PRODUCT RENDER",
+          "CMF"
+        ],
+        "gallery": [
+          {
+            "src": "./droplet-source-render-red-dot-2026.png",
+            "label": "SOURCE RENDER",
+            "caption": "Main render showing posture, proportion, and outdoor exercise context.",
+            "evidenceType": "Hero render"
+          },
+          {
+            "src": "./droplet-gallery-1.webp",
+            "label": "A4 LAYOUT 1",
+            "caption": "A4 layout board 1 showing design concept and overall form.",
+            "evidenceType": "Render evidence"
+          },
+          {
+            "src": "./droplet-gallery-2.webp",
+            "label": "A4 LAYOUT 2",
+            "caption": "A4 layout board 2 explaining functional details and user grip experience.",
+            "evidenceType": "Render evidence"
+          },
+          {
+            "src": "./droplet-gallery-3.webp",
+            "label": "A4 LAYOUT 3",
+            "caption": "A4 layout board 3 showing outdoor exercise scenarios and colorways.",
+            "evidenceType": "Usage evidence"
+          },
+          {
+            "src": "./droplet-gallery-4.webp",
+            "label": "A4 LAYOUT 4",
+            "caption": "A4 layout board 4 detailing internal structures and design derivation.",
+            "evidenceType": "Usage evidence"
+          },
+          {
+            "src": "./droplet-gallery-5.webp",
+            "label": "A4 LAYOUT 5",
+            "caption": "A4 layout board 5 showing airflow, visible water path, and functional details.",
+            "evidenceType": "Usage evidence"
+          },
+          {
+            "src": "./droplet-gallery-6.webp",
+            "label": "A4 LAYOUT 6",
+            "caption": "A4 layout board 6 highlighting portability and carry experience.",
+            "evidenceType": "Usage evidence"
+          }
+        ],
+        "tabs": [
+          {
+            "id": "overview",
+            "label": "Overview",
+            "title": "Hydration after outdoor exercise",
+            "body": "DROPLET compresses carry, drinking, supplement, and visible hygiene into one product action.",
+            "bullets": [
+              "Award: Red Dot Award: Design Concept Winner 2026",
+              "Users: outdoor pets and owners",
+              "Goal: reduce hydration and carry burden",
+              "Output: concept and scenario render"
+            ]
+          },
+          {
+            "id": "process",
+            "label": "Process",
+            "title": "Scenario-led product reasoning",
+            "body": "The project starts from dehydration risk after outdoor activity, then derives grip, drinking, visible water path, and refill structure.",
+            "bullets": [
+              "Scenario pain-point mapping",
+              "Sketch form exploration",
+              "Integrated usage flow"
+            ]
+          },
+          {
+            "id": "output",
+            "label": "Output",
+            "title": "From sketch to render",
+            "body": "Sketches, flow diagrams, renders, and scenarios make the product direction easier to evaluate.",
+            "bullets": [
+              "Sketch board",
+              "Product render",
+              "Usage flow detail"
+            ]
+          },
+          {
+            "id": "ai",
+            "label": "AI Workflow",
+            "title": "AI speeds visual exploration",
+            "body": "AI helped build the display atmosphere and narrative, then product logic filtered the usable direction.",
+            "bullets": [
+              "Scenario mood generation",
+              "Material and light exploration",
+              "Cross-check with sketch and model output"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "wrist",
+        "title": "WRIST REHABILITATION",
+        "subtitle": "Home rehab UX prototype",
+        "range": "P.08-12",
+        "accent": "teal",
+        "cover": "./rehab-phone-mockup.png",
+        "summary": "A runnable rehabilitation app prototype built around safety confirmation, guided movement feedback, result review, and a replayable local demo flow.",
+        "role": "UX prototype design / local demo / interaction flow validation",
+        "problem": "Home rehabilitation users need clear safety confirmation, movement feedback, and reviewable training results without turning the product into a medical black box.",
+        "output": "A complete app prototype and video evidence set that explains calibration, training, scoring, review, and task continuation.",
+        "tools": "React Demo / UI Mockup / Video Prototype",
+        "aiRole": "AI was used to accelerate interface assets, demo narrative, and visual iteration while the interaction structure remained design-led.",
+        "tags": [
+          "UX PROTOTYPE",
+          "HEALTH REHAB",
+          "LOCAL DEMO",
+          "FLOW + UI + VIDEO"
+        ],
+        "gallery": [
+          {
+            "src": "./rehab-source-render.png",
+            "label": "UI SOURCE",
+            "caption": "Core app interface evidence organized around the training flow rather than a single static screen.",
+            "evidenceType": "Prototype evidence"
+          },
+          {
+            "src": "./fracture-rehab-flow.jpg",
+            "label": "4 STEP FLOW",
+            "caption": "A four-step flow showing how users move from calibration into training and then back to result feedback.",
+            "evidenceType": "Flow evidence"
+          },
+          {
+            "src": "./fracture-rehab-board.jpg",
+            "label": "RESEARCH BOARD",
+            "caption": "Problem framing and early research evidence for rehabilitation constraints, risks, and interaction opportunities.",
+            "evidenceType": "Research evidence"
+          },
+          {
+            "src": "./fracture-rehab-demo.mp4",
+            "label": "DEMO VIDEO",
+            "type": "video",
+            "caption": "Local prototype video used to verify rhythm, feedback, and demonstration completeness.",
+            "evidenceType": "Motion evidence"
+          }
+        ],
+        "tabs": [
+          {
+            "id": "overview",
+            "label": "Overview",
+            "title": "Visible feedback for home rehab",
+            "body": "The project translates training from a vague completion task into a process users can judge, record, and review.",
+            "bullets": [
+              "Target user: home rehabilitation training",
+              "Core value: reduce training uncertainty",
+              "Deliverable: playable app prototype and flow pages"
+            ]
+          },
+          {
+            "id": "process",
+            "label": "Process",
+            "title": "From safety calibration to result review",
+            "body": "The flow handles safety confidence first, then moves into motion recognition, score feedback, and task continuation.",
+            "bullets": [
+              "Pre-training check and calibration",
+              "Feedback during movement",
+              "Post-training result and task mapping"
+            ]
+          },
+          {
+            "id": "output",
+            "label": "Output",
+            "title": "A demo that explains the experience directly",
+            "body": "UI, flow diagrams, and video together provide hiring evidence that can be evaluated quickly.",
+            "bullets": [
+              "Interface system",
+              "Four-step user flow",
+              "Playable video sample"
+            ]
+          },
+          {
+            "id": "ai",
+            "label": "AI Workflow",
+            "title": "AI as iteration support",
+            "body": "AI helped produce visual states and demo material, while the product logic was constrained by the rehabilitation scenario.",
+            "bullets": [
+              "Fast interface mood exploration",
+              "Demo storytelling support",
+              "Explainable interaction structure"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "aquara",
+        "title": "AQUARA",
+        "subtitle": "Aquarium cleaning robot",
+        "range": "P.13-17",
+        "accent": "gold",
+        "cover": "./aqua-robot-cover.webp",
+        "summary": "A product concept for mid-to-large aquariums, combining wall-cleaning, dock charging, self-cleaning, form language, and CMF presentation.",
+        "role": "Industrial design / product strategy / structure and CMF expression",
+        "problem": "Large aquariums accumulate algae quickly, while manual cleaning is frequent, disruptive, and hard to keep consistent.",
+        "output": "A robot product concept covering the body, charging dock, cleaning route, and visual presentation system.",
+        "tools": "Rhino / KeyShot / Photoshop / AI-assisted Rendering",
+        "aiRole": "AI supported rendering mood and visual exploration; the product route and structure came from scenario constraints.",
+        "tags": [
+          "INDUSTRIAL DESIGN",
+          "ROBOTICS",
+          "CMF",
+          "AI RENDERING"
+        ],
+        "gallery": [
+          {
+            "src": "./aqua-robot-views.webp",
+            "label": "SIX VIEWS",
+            "caption": "Six-view evidence showing product proportion, surface relationships, and key form decisions.",
+            "evidenceType": "Form evidence"
+          },
+          {
+            "src": "./aqua-robot-system.webp",
+            "label": "SYSTEM CARD",
+            "caption": "System card explaining the relationship between the robot, dock, and cleaning scenario.",
+            "evidenceType": "System evidence"
+          },
+          {
+            "src": "./aqua-robot-detail.webp",
+            "label": "DETAIL RENDER",
+            "caption": "Detail render for structure, material contrast, and product identity cues.",
+            "evidenceType": "CMF evidence"
+          }
+        ],
+        "tabs": [
+          {
+            "id": "overview",
+            "label": "Overview",
+            "title": "A low-intervention cleaning system",
+            "body": "AQUARA integrates cleaning, docking, and self-maintenance into one home aquarium care system.",
+            "bullets": [
+              "Scenario: mid-to-large aquariums",
+              "Target: algae and wall cleaning",
+              "Output: robot and dock concept"
+            ]
+          },
+          {
+            "id": "process",
+            "label": "Process",
+            "title": "From pain point to product route",
+            "body": "The project first defines work boundaries and route logic, then uses form iteration to make the product credible.",
+            "bullets": [
+              "Cleaning path reasoning",
+              "Docking and self-cleaning logic",
+              "Form proportion and structural components"
+            ]
+          },
+          {
+            "id": "output",
+            "label": "Output",
+            "title": "Complete industrial design evidence",
+            "body": "Views, system cards, and detail rendering support the concept beyond a single hero image.",
+            "bullets": [
+              "Six views",
+              "System explanation",
+              "Detail and material render"
+            ]
+          },
+          {
+            "id": "ai",
+            "label": "AI Workflow",
+            "title": "AI supports expression, not structure",
+            "body": "AI helped explore presentation quality, while function and assembly logic were set by design judgment.",
+            "bullets": [
+              "Rendering mood exploration",
+              "Composition iteration",
+              "Final evidence anchored in product logic"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "cookware",
+        "title": "OUTDOOR COOKWARE",
+        "subtitle": "Family outdoor cooking system",
+        "range": "P.18-22",
+        "accent": "gold",
+        "cover": "./cookware-hero.webp",
+        "summary": "An undergraduate graduation design for family outdoor cooking, focused on safer cooking, easier carrying, integrated storage, and complete product presentation.",
+        "role": "Graduation design / industrial design / product modeling and rendering",
+        "problem": "Family picnic users face open-flame safety risks, cumbersome separated cookware sets, and easily lost accessories in outdoor cooking scenarios.",
+        "output": "A full product concept covering the cooker body, nested pot, accessory tray, engineering drawing, presentation board, and thesis-based problem framing.",
+        "tools": "Rhino / KeyShot / Photoshop / Product Board / Thesis Writing",
+        "aiRole": "AI supported rendering clarity and outdoor scene mood, while the product structure, thesis argument, and board organization came from the graduation design process.",
+        "tags": [
+          "GRADUATION DESIGN",
+          "OUTDOOR COOKWARE",
+          "PRODUCT RENDER",
+          "ENGINEERING DRAWING"
+        ],
+        "gallery": [
+          {
+            "src": "./cookware-context.webp",
+            "label": "CONTEXT RENDER",
+            "caption": "Outdoor context render showing how the product sits in a family camping and tabletop cooking scene.",
+            "evidenceType": "Scenario render"
+          },
+          {
+            "src": "./cookware-studio.webp",
+            "label": "STUDIO RENDER",
+            "caption": "Studio render explaining the body, nested pot, side accessory tray, and black-white CMF direction.",
+            "evidenceType": "Product render"
+          },
+          {
+            "src": "./cookware-board-sketch.webp",
+            "label": "SKETCH BOARD",
+            "caption": "Presentation board crop preserving sketch exploration, form logic, and cookware structure reasoning.",
+            "evidenceType": "Process evidence"
+          },
+          {
+            "src": "./cookware-engineering.webp",
+            "label": "ENGINEERING",
+            "caption": "Engineering drawing evidence for dimensions, views, and manufacturing-oriented structure expression.",
+            "evidenceType": "Drawing evidence"
+          }
+        ],
+        "tabs": [
+          {
+            "id": "overview",
+            "label": "Overview",
+            "title": "A safer family outdoor cookware concept",
+            "body": "The project turns family outdoor cooking problems into a compact product system that combines safety, storage, carrying, and cooking behavior.",
+            "bullets": [
+              "Users: family camping and picnic groups",
+              "Value: lower safety and storage friction",
+              "Deliverables: renderings, board crops, drawings, and thesis framing"
+            ]
+          },
+          {
+            "id": "process",
+            "label": "Process",
+            "title": "From thesis problem to product system",
+            "body": "The thesis frames open-flame risk, scattered cookware, and accessory loss as design problems, then the product responds with integrated housing, nested pot storage, and an accessory tray.",
+            "bullets": [
+              "Competitor and user problem framing",
+              "Sketch and form exploration",
+              "Board evidence for details and scenarios"
+            ]
+          },
+          {
+            "id": "output",
+            "label": "Output",
+            "title": "Renderings, board evidence, and drawings",
+            "body": "New renders carry the visual presentation, while board crops and engineering drawings keep the project grounded in process and structure.",
+            "bullets": [
+              "Hero and context renders",
+              "Board process crop",
+              "Engineering drawing"
+            ]
+          },
+          {
+            "id": "ai",
+            "label": "AI Workflow",
+            "title": "AI strengthens presentation only",
+            "body": "AI was used for render enhancement and outdoor mood support, with final judgment anchored in modeling, thesis content, and board evidence.",
+            "bullets": [
+              "Rendering quality support",
+              "Outdoor atmosphere iteration",
+              "Structure and thesis evidence retained"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

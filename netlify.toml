@@ -1,0 +1,48 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+[[redirects]]
+  from = "/api/session"
+  to = "/.netlify/functions/session"
+  status = 200
+
+[[redirects]]
+  from = "/api/session/callback"
+  to = "/.netlify/functions/session"
+  status = 200
+
+[[redirects]]
+  from = "/api/content"
+  to = "/.netlify/functions/content"
+  status = 200
+
+[[redirects]]
+  from = "/api/drafts"
+  to = "/.netlify/functions/drafts"
+  status = 200
+
+[[redirects]]
+  from = "/api/assets"
+  to = "/.netlify/functions/assets"
+  status = 200
+
+[[redirects]]
+  from = "/api/publish"
+  to = "/.netlify/functions/publish"
+  status = 200
+
+[[redirects]]
+  from = "/api/audit-log"
+  to = "/.netlify/functions/audit-log"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; connect-src 'self' https://api.github.com https://github.com; frame-src 'self' https://andresun-hyper-portfolio.netlify.app https://deploy-preview-*--andresun-hyper-portfolio.netlify.app; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=(), fullscreen=(self)"
+    X-Robots-Tag = "noindex, nofollow"
