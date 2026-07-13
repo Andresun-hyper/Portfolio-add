@@ -60,6 +60,49 @@ button.danger {
   padding: 28px;
 }
 
+.login-panel .error {
+  margin-top: 10px;
+}
+
+.setup-notice {
+  margin: 16px 0;
+  padding: 14px;
+  border: 1px solid #e2dacb;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.setup-notice p {
+  margin: 0 0 10px;
+  font-size: 14px;
+}
+
+.missing-list {
+  margin: 0 0 12px;
+  padding-left: 20px;
+}
+
+.missing-list li {
+  margin: 4px 0;
+  font-size: 13px;
+}
+
+.missing-list code,
+.callback-url {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+  background: #f4f1ea;
+  padding: 2px 5px;
+  border-radius: 4px;
+  word-break: break-all;
+}
+
+.callback-url {
+  display: block;
+  padding: 8px;
+  margin-top: 6px;
+}
+
 .admin-shell {
   min-height: 100vh;
   padding: 18px;

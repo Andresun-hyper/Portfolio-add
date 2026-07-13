@@ -52,6 +52,10 @@ export function getRequiredEnv(name: string) {
   return value;
 }
 
+export function getMissingEnvVars(names: readonly string[]) {
+  return names.filter(name => !process.env[name]);
+}
+
 export function getOptionalEnv(name: string, fallback = '') {
   return process.env[name] || fallback;
 }

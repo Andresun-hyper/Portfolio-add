@@ -1,7 +1,7 @@
 import type { Config } from '@netlify/functions';
 import { z } from 'zod';
 import { writeAuditEvent } from './_lib/audit';
-import { ApiError, errorResponse, getRequiredEnv, json, redirect, readJsonBody } from './_lib/http';
+import { ApiError, errorResponse, getMissingEnvVars, getRequiredEnv, json, redirect, readJsonBody } from './_lib/http';
 import {
   appOrigin,
   assertOrigin,
@@ -28,6 +28,28 @@ export const config: Config = {
 const sessionActionSchema = z.object({
   action: z.literal('invalidate_all'),
 });
+
+const REQUIRED_LOGIN_ENV = [
+  'ADMIN_GITHUB_CLIENT_ID',
+  'ADMIN_GITHUB_CLIENT_SECRET',
+  'ADMIN_ALLOWED_GITHUB_USER_ID',
+  'ADMIN_SESSION_SECRET',
+] as const;
+
+const REQUIRED_REPO_ENV = [
+  'GITHUB_FINE_GRAINED_PAT',
+  'GITHUB_REPO_OWNER',
+  'GITHUB_REPO_NAME',
+] as const;
+
+function getConfigStatus(request: Request) {
+  const callback = new URL('/api/session/callback', appOrigin(request)).toString();
+  const missing = [
+    ...getMissingEnvVars(REQUIRED_LOGIN_ENV),
+    ...getMissingEnvVars(REQUIRED_REPO_ENV),
+  ];
+  return { ready: missing.length === 0, missing, callback };
+}
 
 async function exchangeGitHubCode(code: string, redirectUri: string) {
   const response = await fetch('https://github.com/login/oauth/access_token', {
@@ -65,6 +87,10 @@ async function fetchGitHubUser(accessToken: string) {
 }
 
 async function beginLogin(request: Request) {
+  const configStatus = getConfigStatus(request);
+  if (!configStatus.ready) {
+    throw new ApiError(503, 'missing_config', `Missing environment variables: ${configStatus.missing.join(', ')}`);
+  }
   const { state, headers } = createOAuthStateHeaders();
   const redirectUri = new URL('/api/session/callback', appOrigin(request)).toString();
   const authorize = new URL('https://github.com/login/oauth/authorize');
@@ -114,11 +140,13 @@ export default async function handler(request: Request) {
     }
 
     if (request.method === 'GET') {
+      const configStatus = getConfigStatus(request);
       const session = await readSession(request);
       return json({
         authenticated: Boolean(session),
         user: session?.actor ?? null,
         csrfToken: session?.csrfToken ?? null,
+        config: configStatus,
       });
     }
 

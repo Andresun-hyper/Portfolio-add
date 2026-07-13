@@ -121,6 +121,7 @@ export async function createSession(actor: AdminActor) {
 }
 
 export async function readSession(request: Request) {
+  if (!process.env['ADMIN_SESSION_SECRET']) return null;
   const sessionId = parseCookies(request.headers.get('cookie')).get(SESSION_COOKIE);
   if (!sessionId) return null;
 

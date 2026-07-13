@@ -2,10 +2,17 @@ import { useEffect, useMemo, useState } from 'react';
 import { portfolioContentSchema, type AntigravityProject, type PortfolioContent, type PortfolioSlide } from './content/portfolio.schema';
 import fallbackContent from './content/portfolio.json';
 
+interface ConfigStatus {
+  ready: boolean;
+  missing: string[];
+  callback: string;
+}
+
 interface SessionState {
   authenticated: boolean;
   user: { id: number; login: string; avatarUrl?: string } | null;
   csrfToken: string | null;
+  config: ConfigStatus;
 }
 
 interface ContentResponse {
@@ -303,9 +310,28 @@ export default function App() {
         <section className="login-panel">
           <p className="eyebrow">Andre Portfolio Admin</p>
           <h1>独立后台</h1>
-          <p>使用 GitHub OAuth 登录。后台站和正式作品集站分离，正式站不读取后台 API。</p>
+          {session?.config && !session.config.ready ? (
+            <div className="setup-notice">
+              <p>Admin login is not ready. Set these Netlify site environment variables. Secret names must never start with VITE_ — the build check prevents leaks.</p>
+              <ul className="missing-list">
+                {session.config.missing.map(name => (
+                  <li key={name}><code>{name}</code></li>
+                ))}
+              </ul>
+              <p>GitHub OAuth callback URL for this admin site:</p>
+              <code className="callback-url">{session.config.callback}</code>
+            </div>
+          ) : (
+            <p>使用 GitHub OAuth 登录。后台站和正式作品集站分离，正式站不读取后台 API。</p>
+          )}
           {error && <p className="error">{error}</p>}
-          <a className="primary-link" href="/api/session?login=github">Sign in with GitHub</a>
+          {session?.config?.ready ? (
+            <a className="primary-link" href="/api/session?login=github">Sign in with GitHub</a>
+          ) : (
+            <button className="primary-link" disabled>
+              {session?.config ? 'Sign in with GitHub (configure first)' : 'Loading...'}
+            </button>
+          )}
         </section>
       </main>
     );
