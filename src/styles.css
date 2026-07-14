@@ -4,6 +4,7 @@
   --muted: #6f797c;
   --line: #dfe6e5;
   --teal: #19b895;
+  --teal-dark: #0a7a61;
   --gold: #c9a334;
   --danger: #c94a4a;
   --shadow: rgba(16, 21, 24, 0.06);
@@ -76,6 +77,25 @@ button:disabled {
   opacity: 0.5;
   background: var(--paper);
   border-color: var(--line);
+}
+
+button:focus-visible,
+.primary-link:focus-visible {
+  outline: 2px solid var(--teal-dark);
+  outline-offset: 2px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+  opacity: 0;
 }
 
 button.primary,
@@ -372,8 +392,8 @@ textarea {
 input:focus,
 select:focus,
 textarea:focus {
-  border-color: var(--teal);
-  box-shadow: 0 0 0 3px rgba(25, 184, 149, 0.12);
+  border-color: var(--teal-dark);
+  box-shadow: 0 0 0 3px rgba(10, 122, 97, 0.12);
 }
 
 input:disabled,
@@ -411,16 +431,29 @@ textarea {
 }
 
 .upload {
+  position: relative;
   cursor: pointer;
-  color: var(--teal);
+  color: var(--teal-dark);
   font-weight: 500;
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+}
+
+.upload:focus-within {
+  outline: 2px solid var(--teal-dark);
+  outline-offset: 2px;
 }
 
 .upload input {
-  display: none;
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
 }
 
 .tabs-editor,
@@ -440,7 +473,7 @@ textarea {
 }
 
 .tab-label {
-  color: var(--teal);
+  color: var(--teal-dark);
   font-weight: 600;
   font-size: 12px;
   text-transform: uppercase;
@@ -481,12 +514,18 @@ textarea {
 }
 
 .preview-chrome a {
-  color: var(--teal);
+  color: var(--teal-dark);
   text-decoration: none;
 }
 
 .preview-chrome a:hover {
   text-decoration: underline;
+}
+
+.preview-chrome a:focus-visible {
+  outline: 2px solid var(--teal-dark);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 
 .preview-title {
@@ -517,9 +556,9 @@ textarea {
 }
 
 .preview-actions .active {
-  background: var(--teal);
+  background: var(--teal-dark);
   color: #fff;
-  border-color: var(--teal);
+  border-color: var(--teal-dark);
 }
 
 .publish-actions {
@@ -567,7 +606,7 @@ textarea {
 }
 
 .audit-list strong {
-  color: var(--teal);
+  color: var(--teal-dark);
   font-weight: 600;
 }
 

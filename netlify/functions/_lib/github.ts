@@ -28,6 +28,13 @@ export interface DraftInfo {
   };
 }
 
+interface ContentState {
+  kind: 'draft' | 'base' | 'fallback';
+  sha: string;
+  content: PortfolioContent;
+  warning?: string;
+}
+
 function repo() {
   return {
     owner: getRequiredEnv('GITHUB_REPO_OWNER'),
@@ -62,6 +69,29 @@ export async function getBaseRefSha(branch = repo().baseBranch) {
   return ref.object.sha;
 }
 
+async function pathExistsInBranchTree(branch: string): Promise<boolean> {
+  const { owner, name } = repo();
+  const tree = await github<{
+    tree: Array<{ path: string; type: string }>;
+    truncated?: boolean;
+  }>(`/repos/${owner}/${name}/git/trees/${encodeURIComponent(branch)}?recursive=1`);
+  if (tree.truncated) {
+    throw new ApiError(502, 'github_tree_truncated', 'GitHub 仓库目录过大，无法可靠确认内容文件是否存在。');
+  }
+  return tree.tree.some(item => item.type === 'blob' && item.path === CONTENT_PATH);
+}
+
+async function verifyContent404(branch: string): Promise<void> {
+  const exists = await pathExistsInBranchTree(branch);
+  if (exists) {
+    throw new ApiError(
+      502,
+      'github_content_unavailable',
+      'GitHub Contents API returned 404 but the file exists in the repository tree; the content may be unavailable due to a service issue.',
+    );
+  }
+}
+
 async function branchExists(branch: string) {
   const { owner, name } = repo();
   const response = await fetch(`https://api.github.com/repos/${owner}/${name}/git/ref/heads/${encodeURIComponent(branch)}`, {
@@ -91,13 +121,13 @@ export async function ensureDraftBranch() {
   return DRAFT_BRANCH;
 }
 
-export async function getFileContent(branch: string): Promise<{ sha: string; content: PortfolioContent; warning?: string }> {
+export async function getFileContent(branch: string): Promise<{ sha: string; content: PortfolioContent }> {
   const { owner, name } = repo();
   const file = await github<GitHubContentResponse>(
     `/repos/${owner}/${name}/contents/${CONTENT_PATH}?ref=${encodeURIComponent(branch)}`,
   );
   if (file.encoding !== 'base64') {
-    throw new ApiError(502, 'unsupported_encoding', 'GitHub returned unsupported file encoding.');
+    throw new ApiError(502, 'unsupported_encoding', 'GitHub 返回了不支持的文件编码。');
   }
   const parsed = portfolioContentSchema.parse(JSON.parse(Buffer.from(file.content, 'base64').toString('utf8')));
   return { sha: file.sha, content: parsed };
@@ -138,32 +168,52 @@ async function getNetlifyPreviewUrl(sha: string) {
   return netlify?.target_url;
 }
 
-export async function getDraftInfo(): Promise<DraftInfo> {
+async function getDraftContentState(): Promise<ContentState> {
   const { baseBranch } = repo();
   const branch = await ensureDraftBranch();
 
-  const file = await getFileContent(branch).catch(async error => {
+  try {
+    const { sha, content } = await getFileContent(branch);
+    return { kind: 'draft', sha, content };
+  } catch (error) {
     if (error instanceof ApiError && error.status === 404) {
-      return await getFileContent(baseBranch).catch(baseError => {
+      await verifyContent404(branch);
+      try {
+        const { sha, content } = await getFileContent(baseBranch);
+        return {
+          kind: 'base',
+          sha,
+          content,
+          warning: '草稿分支尚未包含 portfolio.json，已从基础分支加载。首次保存将在草稿分支创建该文件。',
+        };
+      } catch (baseError) {
         if (baseError instanceof ApiError && baseError.status === 404) {
+          await verifyContent404(baseBranch);
           return {
+            kind: 'fallback',
             sha: MISSING_SHA,
             content: fallbackPortfolioContent(),
             warning: '远端仓库尚无 portfolio.json，已加载本地默认内容。首次保存将自动创建该文件。',
           };
         }
         throw baseError;
-      });
+      }
     }
     throw error;
-  });
+  }
+}
+
+export async function getDraftInfo(): Promise<DraftInfo> {
+  const { baseBranch } = repo();
+  const branch = await ensureDraftBranch();
+  const state = await getDraftContentState();
 
   return {
     branch,
     baseBranch,
-    contentSha: file.sha,
-    content: file.content,
-    warning: file.warning,
+    contentSha: state.kind === 'draft' ? state.sha : MISSING_SHA,
+    content: state.content,
+    warning: state.warning,
     pr: await findDraftPullRequest(),
   };
 }
@@ -172,41 +222,48 @@ export async function writePortfolioContent(content: PortfolioContent, baseSha: 
   const { owner, name } = repo();
   const branch = await ensureDraftBranch();
 
-  const current = await getFileContent(branch).catch(async error => {
-    if (error instanceof ApiError && error.status === 404) {
-      return await getFileContent(repo().baseBranch).catch(baseError => {
-        if (baseError instanceof ApiError && baseError.status === 404) {
-          return { sha: MISSING_SHA, content: fallbackPortfolioContent() };
-        }
-        throw baseError;
-      });
-    }
-    throw error;
-  });
+  let currentSha: string | undefined;
+  let currentExists = false;
+  try {
+    const draft = await getFileContent(branch);
+    currentSha = draft.sha;
+    currentExists = true;
+  } catch (error) {
+    if (!(error instanceof ApiError) || error.status !== 404) throw error;
+    await verifyContent404(branch);
+  }
 
   const body = JSON.stringify(portfolioContentSchema.parse(content), null, 2) + '\n';
+  const staleError = new ApiError(409, 'stale_draft', '草稿已被他人修改，请先刷新再保存。');
 
   if (baseSha === MISSING_SHA) {
-    if (current.sha !== MISSING_SHA) {
-      throw new ApiError(409, 'stale_draft', 'Draft has changed. Refresh before saving again.');
+    if (currentExists) throw staleError;
+
+    let result: { content: { sha: string }; commit: { sha: string } };
+    try {
+      result = await github<{ content: { sha: string }; commit: { sha: string } }>(
+        `/repos/${owner}/${name}/contents/${CONTENT_PATH}`,
+        {
+          method: 'PUT',
+          body: JSON.stringify({
+            message: 'Create portfolio content from admin',
+            content: Buffer.from(body, 'utf8').toString('base64'),
+            branch,
+          }),
+        },
+      );
+    } catch (error) {
+      if (error instanceof ApiError && (error.status === 409 || error.status === 422)) {
+        throw staleError;
+      }
+      throw error;
     }
-    const result = await github<{ content: { sha: string }; commit: { sha: string } }>(
-      `/repos/${owner}/${name}/contents/${CONTENT_PATH}`,
-      {
-        method: 'PUT',
-        body: JSON.stringify({
-          message: 'Create portfolio content from admin',
-          content: Buffer.from(body, 'utf8').toString('base64'),
-          branch,
-        }),
-      },
-    );
     const pr = await ensureDraftPullRequest();
     return { branch, contentSha: result.content.sha, commitSha: result.commit.sha, pr };
   }
 
-  if (current.sha !== baseSha) {
-    throw new ApiError(409, 'stale_draft', 'Draft has changed. Refresh before saving again.');
+  if (!currentExists || currentSha !== baseSha) {
+    throw staleError;
   }
 
   const result = await github<{ content: { sha: string }; commit: { sha: string } }>(
@@ -216,7 +273,7 @@ export async function writePortfolioContent(content: PortfolioContent, baseSha: 
       body: JSON.stringify({
         message: 'Update portfolio content from admin',
         content: Buffer.from(body, 'utf8').toString('base64'),
-        sha: current.sha,
+        sha: currentSha,
         branch,
       }),
     },
@@ -262,34 +319,42 @@ export async function ensureDraftPullRequest() {
   if (existing) return existing;
 
   const { owner, name, baseBranch } = repo();
-  const pr = await github<{
-    number: number;
-    html_url: string;
-    state: string;
-    head: { sha: string };
-  }>(`/repos/${owner}/${name}/pulls`, {
-    method: 'POST',
-    body: JSON.stringify({
-      title: 'Portfolio admin draft',
-      head: DRAFT_BRANCH,
-      base: baseBranch,
-      body: '@netlify /\n\nGenerated by the portfolio admin.',
-      draft: false,
-    }),
-  });
-  return {
-    number: pr.number,
-    htmlUrl: pr.html_url,
-    state: pr.state,
-    headSha: pr.head.sha,
-  };
+  try {
+    const pr = await github<{
+      number: number;
+      html_url: string;
+      state: string;
+      head: { sha: string };
+    }>(`/repos/${owner}/${name}/pulls`, {
+      method: 'POST',
+      body: JSON.stringify({
+        title: 'Portfolio admin draft',
+        head: DRAFT_BRANCH,
+        base: baseBranch,
+        body: '@netlify /\n\nGenerated by the portfolio admin.',
+        draft: false,
+      }),
+    });
+    return {
+      number: pr.number,
+      htmlUrl: pr.html_url,
+      state: pr.state,
+      headSha: pr.head.sha,
+    };
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 422) {
+      const raced = await findDraftPullRequest();
+      if (raced) return raced;
+    }
+    throw error;
+  }
 }
 
 export async function mergeDraftPullRequest() {
   const { owner, name } = repo();
   const pr = await findDraftPullRequest();
   if (!pr) {
-    throw new ApiError(404, 'missing_pr', 'No active draft pull request found.');
+    throw new ApiError(404, 'missing_pr', '当前没有可合并的草稿 Pull Request。');
   }
   const result = await github<{ sha: string; merged: boolean; message: string }>(
     `/repos/${owner}/${name}/pulls/${pr.number}/merge`,

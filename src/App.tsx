@@ -58,7 +58,8 @@ const portfolioUrl = import.meta.env.VITE_PORTFOLIO_URL || FALLBACK_PORTFOLIO_UR
 function portfolioAssetUrl(src?: string): string {
   if (!src) return '';
   if (/^(?:https?:|data:|blob:)/i.test(src)) return src;
-  return new URL(src, portfolioUrl).toString();
+  const base = portfolioUrl.replace(/\/?$/, '/');
+  return new URL(src, base).toString();
 }
 
 async function api<T>(path: string, options: RequestInit = {}, csrfToken?: string | null): Promise<T> {
@@ -94,10 +95,10 @@ function findAntigravityProject(content: PortfolioContent, id: string) {
 function friendlyError(err: unknown): string {
   const message = err instanceof Error ? err.message : String(err);
   const lower = message.toLowerCase();
-  if (lower.includes('stale_draft') || lower.includes('draft has changed')) {
+  if (lower.includes('stale_draft') || lower.includes('draft has changed') || message.includes('草稿已被他人修改')) {
     return '草稿已被他人修改，请先刷新再保存。';
   }
-  if (lower.includes('missing_pr')) {
+  if (lower.includes('missing_pr') || message.includes('没有可合并')) {
     return '当前没有可合并的草稿 Pull Request。';
   }
   if (lower.includes('rate limit') || lower.includes('too many requests') || lower.includes('429')) {
@@ -109,14 +110,17 @@ function friendlyError(err: unknown): string {
   if (lower.includes('404') || lower.includes('not found')) {
     return '远端文件不存在，或仓库、分支、PAT 配置有误。';
   }
-  if (lower.includes('upload') || lower.includes('asset') || lower.includes('image')) {
+  if (lower.includes('upload') || lower.includes('asset') || lower.includes('image') || message.includes('图片')) {
     return '图片上传失败，请检查文件格式和网络后重试。';
   }
-  if (lower.includes('body_too_large') || lower.includes('too large')) {
+  if (lower.includes('body_too_large') || lower.includes('too large') || message.includes('过大')) {
     return '请求内容过大，请缩小图片或文件后重试。';
   }
-  if (lower.includes('invalid_json')) {
+  if (lower.includes('invalid_json') || message.includes('格式错误')) {
     return '提交数据格式错误，请刷新后重试。';
+  }
+  if (message.includes('不支持的文件编码')) {
+    return 'GitHub 返回了不支持的文件编码，请稍后重试。';
   }
   return '操作失败，请稍后重试；若问题持续，请检查后台配置。';
 }
@@ -533,10 +537,15 @@ export default function App() {
               <img src={portfolioAssetUrl(selected.cover)} alt={selected.title} />
               <label className="upload">
                 <ImagePlus size={14} /> 替换封面
-                <input type="file" accept="image/jpeg,image/png,image/webp" onChange={event => {
-                  const file = event.target.files?.[0];
-                  if (file) uploadCover(file);
-                }} />
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  className="visually-hidden"
+                  onChange={event => {
+                    const file = event.target.files?.[0];
+                    if (file) uploadCover(file);
+                  }}
+                />
               </label>
             </div>
 
