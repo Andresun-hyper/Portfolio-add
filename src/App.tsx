@@ -1,6 +1,24 @@
 import { useEffect, useMemo, useState } from 'react';
 import { portfolioContentSchema, type AntigravityProject, type PortfolioContent, type PortfolioSlide } from './content/portfolio.schema';
 import fallbackContent from './content/portfolio.json';
+import {
+  ArrowDown,
+  ArrowUp,
+  Archive,
+  Copy,
+  History,
+  ImagePlus,
+  LogIn,
+  LogOut,
+  Monitor,
+  Plus,
+  RefreshCw,
+  Save,
+  Send,
+  ShieldAlert,
+  Smartphone,
+  Trash2,
+} from 'lucide-react';
 
 interface ConfigStatus {
   ready: boolean;
@@ -37,6 +55,12 @@ interface AuditEvent {
 const FALLBACK_PORTFOLIO_URL = 'https://andresun-hyper-portfolio.netlify.app/';
 const portfolioUrl = import.meta.env.VITE_PORTFOLIO_URL || FALLBACK_PORTFOLIO_URL;
 
+function portfolioAssetUrl(src?: string): string {
+  if (!src) return '';
+  if (/^(?:https?:|data:|blob:)/i.test(src)) return src;
+  return new URL(src, portfolioUrl).toString();
+}
+
 async function api<T>(path: string, options: RequestInit = {}, csrfToken?: string | null): Promise<T> {
   const headers = new Headers(options.headers);
   if (options.body && !headers.has('content-type')) headers.set('content-type', 'application/json');
@@ -67,12 +91,54 @@ function findAntigravityProject(content: PortfolioContent, id: string) {
   return content.antigravity.projects.find(project => project.id === id);
 }
 
+function friendlyError(err: unknown): string {
+  const message = err instanceof Error ? err.message : String(err);
+  const lower = message.toLowerCase();
+  if (lower.includes('stale_draft') || lower.includes('draft has changed')) {
+    return '草稿已被他人修改，请先刷新再保存。';
+  }
+  if (lower.includes('missing_pr')) {
+    return '当前没有可合并的草稿 Pull Request。';
+  }
+  if (lower.includes('rate limit') || lower.includes('too many requests') || lower.includes('429')) {
+    return 'GitHub API 请求过于频繁，请稍后再试。';
+  }
+  if (lower.includes('401') || lower.includes('403') || lower.includes('bad credentials') || lower.includes('permission')) {
+    return 'PAT 或 GitHub 权限不足，请检查仓库、分支和 Token 配置。';
+  }
+  if (lower.includes('404') || lower.includes('not found')) {
+    return '远端文件不存在，或仓库、分支、PAT 配置有误。';
+  }
+  if (lower.includes('upload') || lower.includes('asset') || lower.includes('image')) {
+    return '图片上传失败，请检查文件格式和网络后重试。';
+  }
+  if (lower.includes('body_too_large') || lower.includes('too large')) {
+    return '请求内容过大，请缩小图片或文件后重试。';
+  }
+  if (lower.includes('invalid_json')) {
+    return '提交数据格式错误，请刷新后重试。';
+  }
+  return '操作失败，请稍后重试；若问题持续，请检查后台配置。';
+}
+
+function auditActionLabel(action: string): string {
+  const labels: Record<string, string> = {
+    login: '登录后台',
+    save_draft: '保存草稿',
+    upload_asset: '上传图片',
+    publish: '发布作品集',
+    invalidate_sessions: '退出所有会话',
+    rate_limit: '触发访问限制',
+  };
+  return labels[action] ?? '后台操作';
+}
+
 function defaultTabs() {
   return [
-    { id: 'overview' as const, label: 'Overview', title: 'Overview', body: 'Describe the project overview.', bullets: ['Audience', 'Goal', 'Output'] },
-    { id: 'process' as const, label: 'Process', title: 'Process', body: 'Describe the project process.', bullets: ['Research', 'Iteration', 'Decision'] },
-    { id: 'output' as const, label: 'Output', title: 'Output', body: 'Describe the final output.', bullets: ['Deliverable', 'Evidence', 'Result'] },
-    { id: 'ai' as const, label: 'AI Workflow', title: 'AI Workflow', body: 'Describe how AI supported the work.', bullets: ['Exploration', 'Refinement', 'Validation'] },
+    { id: 'overview' as const, label: '概述', title: '项目概述', body: '描述项目背景与目标。', bullets: ['受众', '目标', '产出'] },
+    { id: 'process' as const, label: '过程', title: '设计过程', body: '描述项目推进过程。', bullets: ['研究', '迭代', '决策'] },
+    { id: 'output' as const, label: '产出', title: '最终产出', body: '描述最终交付物。', bullets: ['交付物', '证据', '结果'] },
+    { id: 'ai' as const, label: 'AI 工作流', title: 'AI 工作流', body: '描述 AI 如何辅助本项目。', bullets: ['探索', '细化', '验证'] },
   ];
 }
 
@@ -80,19 +146,19 @@ function createProject(id: string): PortfolioSlide & { kind: 'project' } {
   return {
     id,
     kind: 'project',
-    title: 'NEW PROJECT',
-    subtitle: 'Project subtitle',
+    title: '新项目',
+    subtitle: '项目副标题',
     range: 'P.00-00',
     accent: 'teal',
     cover: './project-1.jpg',
-    summary: 'Short project summary.',
-    role: 'Role / responsibility',
-    problem: 'Problem statement.',
-    evidence: ['Evidence point'],
-    output: 'Output statement.',
-    tools: 'Tools',
-    aiRole: 'AI workflow note.',
-    tags: ['NEW PROJECT'],
+    summary: '简短项目摘要。',
+    role: '角色 / 职责',
+    problem: '问题陈述。',
+    evidence: ['证据点'],
+    output: '产出说明。',
+    tools: '工具',
+    aiRole: 'AI 工作流说明。',
+    tags: ['新项目'],
     jobTracks: ['industrial'],
     gallery: [],
     tabs: defaultTabs(),
@@ -108,11 +174,11 @@ function createAntigravityProject(project: PortfolioSlide & { kind: 'project' })
     accent: project.accent,
     cover: project.cover ?? './project-1.jpg',
     summary: project.summary ?? project.title,
-    role: project.role ?? 'Role / responsibility',
-    problem: project.problem ?? 'Problem statement.',
-    output: project.output ?? 'Output statement.',
-    tools: project.tools ?? 'Tools',
-    aiRole: project.aiRole ?? 'AI workflow note.',
+    role: project.role ?? '角色 / 职责',
+    problem: project.problem ?? '问题陈述。',
+    output: project.output ?? '产出说明。',
+    tools: project.tools ?? '工具',
+    aiRole: project.aiRole ?? 'AI 工作流说明。',
     tags: project.tags ?? [],
     gallery: project.gallery ?? [],
     tabs: project.tabs ?? defaultTabs(),
@@ -136,7 +202,7 @@ export default function App() {
   const [contentInfo, setContentInfo] = useState<ContentResponse | null>(null);
   const [content, setContent] = useState<PortfolioContent>(() => portfolioContentSchema.parse(fallbackContent));
   const [selectedId, setSelectedId] = useState<string>('droplet');
-  const [status, setStatus] = useState('Loading session...');
+  const [status, setStatus] = useState('加载会话中…');
   const [error, setError] = useState('');
   const [previewMode, setPreviewMode] = useState<'desktop' | 'mobile'>('desktop');
   const [auditEvents, setAuditEvents] = useState<AuditEvent[]>([]);
@@ -152,20 +218,20 @@ export default function App() {
     const nextSession = await api<SessionState>('/api/session');
     setSession(nextSession);
     if (!nextSession.authenticated) {
-      setStatus('Not signed in.');
+      setStatus('未登录');
       return;
     }
     const nextContent = await api<ContentResponse>('/api/content');
     setContentInfo(nextContent);
     setContent(cloneContent(nextContent.content));
     setSelectedId(projectSlides(nextContent.content)[0]?.id ?? '');
-    setStatus(nextContent.warning || 'Draft loaded.');
+    setStatus(nextContent.warning || '草稿已加载');
   }
 
   useEffect(() => {
     void Promise.resolve().then(refreshAll).catch(err => {
-      setError(err instanceof Error ? err.message : String(err));
-      setStatus('Unable to load admin state.');
+      setError(friendlyError(err));
+      setStatus('无法加载后台状态');
     });
   }, []);
 
@@ -216,7 +282,7 @@ export default function App() {
   function duplicateProject() {
     if (!selected) return;
     const id = `${selected.id}-copy-${Date.now()}`;
-    const copy = { ...cloneContent({ ...content, slides: [selected] }).slides[0], id, title: `${selected.title} COPY` } as PortfolioSlide & { kind: 'project' };
+    const copy = { ...cloneContent({ ...content, slides: [selected] }).slides[0], id, title: `${selected.title} 副本` } as PortfolioSlide & { kind: 'project' };
     updateContent(draft => {
       const index = draft.slides.findIndex(slide => slide.id === selected.id);
       draft.slides.splice(index + 1, 0, copy);
@@ -227,12 +293,17 @@ export default function App() {
 
   function removeProject(archiveOnly: boolean) {
     if (!selected) return;
+    if (!archiveOnly) {
+      const ok = window.confirm('确定永久删除该项目吗？此操作不可撤销。');
+      if (!ok) return;
+    }
     updateContent(draft => {
       if (archiveOnly) {
         const project = projectSlides(draft).find(item => item.id === selected.id);
-        if (project) project.archived = true;
+        const archived = !project?.archived;
+        if (project) project.archived = archived;
         const gravity = findAntigravityProject(draft, selected.id);
-        if (gravity) gravity.archived = true;
+        if (gravity) gravity.archived = archived;
       } else {
         draft.slides = draft.slides.filter(slide => slide.id !== selected.id);
         draft.antigravity.projects = draft.antigravity.projects.filter(project => project.id !== selected.id);
@@ -259,77 +330,116 @@ export default function App() {
 
   async function saveDraft() {
     if (!session?.csrfToken || !contentInfo) return;
-    setStatus('Saving draft...');
+    setStatus('保存草稿中…');
     setError('');
-    const result = await api<{ contentSha: string; pr?: ContentResponse['pr'] }>('/api/drafts', {
-      method: 'POST',
-      body: JSON.stringify({ baseSha: contentInfo.contentSha, content: portfolioContentSchema.parse(content) }),
-    }, session.csrfToken);
-    setContentInfo({ ...contentInfo, contentSha: result.contentSha, content: cloneContent(content), pr: result.pr ?? contentInfo.pr });
-    setStatus('Draft saved. Netlify Deploy Preview may take a moment to appear.');
+    try {
+      const result = await api<{ contentSha: string; pr?: ContentResponse['pr'] }>('/api/drafts', {
+        method: 'POST',
+        body: JSON.stringify({ baseSha: contentInfo.contentSha, content: portfolioContentSchema.parse(content) }),
+      }, session.csrfToken);
+      setContentInfo({ ...contentInfo, contentSha: result.contentSha, content: cloneContent(content), pr: result.pr ?? contentInfo.pr });
+      setStatus('草稿已保存，Netlify Deploy Preview 稍后可用');
+    } catch (err) {
+      setError(friendlyError(err));
+      setStatus('保存失败');
+    }
   }
 
   async function publish() {
     if (!session?.csrfToken) return;
-    setStatus('Publishing draft PR...');
-    const result = await api<{ merged: boolean; sha: string }>('/api/publish', { method: 'POST', body: '{}' }, session.csrfToken);
-    setStatus(result.merged ? `Published at ${result.sha.slice(0, 7)}.` : 'Publish request completed.');
+    const ok = window.confirm('确定合并发布当前草稿吗？发布后将更新线上作品集。');
+    if (!ok) return;
+    setStatus('发布合并中…');
+    setError('');
+    try {
+      const result = await api<{ merged: boolean; sha: string }>('/api/publish', { method: 'POST', body: '{}' }, session.csrfToken);
+      setStatus(result.merged ? `已发布，提交 ${result.sha.slice(0, 7)}` : '发布请求已完成');
+    } catch (err) {
+      setError(friendlyError(err));
+      setStatus('发布失败');
+    }
   }
 
   async function uploadCover(file: File) {
     if (!session?.csrfToken || !selected) return;
-    setStatus('Uploading image...');
-    const data = await encodeFile(file);
-    const result = await api<{ src: string }>('/api/assets', {
-      method: 'POST',
-      body: JSON.stringify({ filename: file.name, mimeType: file.type, data }),
-    }, session.csrfToken);
-    updateSelected(project => { project.cover = result.src; });
-    setStatus('Image uploaded to draft branch. Save the content draft to use it.');
+    setStatus('上传图片中…');
+    setError('');
+    try {
+      const data = await encodeFile(file);
+      const result = await api<{ src: string }>('/api/assets', {
+        method: 'POST',
+        body: JSON.stringify({ filename: file.name, mimeType: file.type, data }),
+      }, session.csrfToken);
+      updateSelected(project => { project.cover = result.src; });
+      setStatus('图片已上传至草稿分支，保存草稿后即可生效');
+    } catch (err) {
+      setError(friendlyError(err));
+      setStatus('图片上传失败');
+    }
   }
 
   async function loadAudit() {
-    const result = await api<{ events: AuditEvent[] }>('/api/audit-log');
-    setAuditEvents(result.events);
+    setStatus('加载审计日志…');
+    setError('');
+    try {
+      const result = await api<{ events: AuditEvent[] }>('/api/audit-log');
+      setAuditEvents(result.events);
+      setStatus('审计日志已加载');
+    } catch (err) {
+      setError(friendlyError(err));
+      setStatus('审计日志加载失败');
+    }
   }
 
   async function logout() {
-    await api('/api/session', { method: 'DELETE' });
-    window.location.reload();
+    try {
+      await api('/api/session', { method: 'DELETE' });
+      window.location.reload();
+    } catch (err) {
+      setError(friendlyError(err));
+    }
   }
 
   async function invalidateSessions() {
     if (!session?.csrfToken) return;
-    await api('/api/session', { method: 'POST', body: JSON.stringify({ action: 'invalidate_all' }) }, session.csrfToken);
-    window.location.reload();
+    const ok = window.confirm('确定退出所有会话吗？包括当前登录。');
+    if (!ok) return;
+    try {
+      await api('/api/session', { method: 'POST', body: JSON.stringify({ action: 'invalidate_all' }) }, session.csrfToken);
+      window.location.reload();
+    } catch (err) {
+      setError(friendlyError(err));
+    }
   }
 
   if (!session?.authenticated) {
     return (
       <main className="login-shell">
         <section className="login-panel">
-          <p className="eyebrow">Andre Portfolio Admin</p>
+          <p className="eyebrow">作品集管理后台</p>
           <h1>独立后台</h1>
           {session?.config && !session.config.ready ? (
             <div className="setup-notice">
-              <p>Admin login is not ready. Set these Netlify site environment variables. Secret names must never start with VITE_ — the build check prevents leaks.</p>
+              <p>管理后台尚未就绪。请设置以下 Netlify 站点环境变量。密钥名称不得以 VITE_ 开头，避免构建时泄露。</p>
               <ul className="missing-list">
                 {session.config.missing.map(name => (
                   <li key={name}><code>{name}</code></li>
                 ))}
               </ul>
-              <p>GitHub OAuth callback URL for this admin site:</p>
+              <p>GitHub OAuth 回调地址：</p>
               <code className="callback-url">{session.config.callback}</code>
             </div>
           ) : (
-            <p>使用 GitHub OAuth 登录。后台站和正式作品集站分离，正式站不读取后台 API。</p>
+            <p>使用 GitHub OAuth 登录。后台站与正式作品集站分离，正式站不读取后台 API。</p>
           )}
           {error && <p className="error">{error}</p>}
           {session?.config?.ready ? (
-            <a className="primary-link" href="/api/session?login=github">Sign in with GitHub</a>
+            <a className="primary-link" href="/api/session?login=github">
+              <LogIn size={16} /> 使用 GitHub 登录
+            </a>
           ) : (
             <button className="primary-link" disabled>
-              {session?.config ? 'Sign in with GitHub (configure first)' : 'Loading...'}
+              {session?.config ? '先配置环境变量' : '加载中…'}
             </button>
           )}
         </section>
@@ -341,42 +451,50 @@ export default function App() {
     <main className="admin-shell">
       <header className="topbar">
         <div>
-          <p className="eyebrow">Portfolio CMS</p>
+          <p className="eyebrow">作品集管理后台</p>
           <h1>作品集后台</h1>
         </div>
         <div className="topbar-actions">
-          <span>{session.user?.login}</span>
-          <button onClick={refreshAll}>Refresh</button>
-          <button onClick={logout}>Logout</button>
+          <span className="user-name">{session.user?.login}</span>
+          <button onClick={() => refreshAll().catch(err => setError(friendlyError(err)))}>
+            <RefreshCw size={14} /> 刷新
+          </button>
+          <button onClick={logout}>
+            <LogOut size={14} /> 退出
+          </button>
         </div>
       </header>
 
       <section className="status-row">
-        <span>{status}</span>
-        {dirty && <strong>Unsaved changes</strong>}
-        {contentInfo?.pr && <a href={contentInfo.pr.htmlUrl} target="_blank" rel="noreferrer">PR #{contentInfo.pr.number}</a>}
+        <span className="status-text">{status}</span>
+        {dirty && <strong className="dirty-badge">有未保存修改</strong>}
+        {contentInfo?.pr && <a href={contentInfo.pr.htmlUrl} target="_blank" rel="noreferrer">查看草稿 PR #{contentInfo.pr.number}</a>}
         {error && <span className="error">{error}</span>}
       </section>
 
       <div className="workspace">
         <aside className="project-list">
           <div className="list-actions">
-            <button onClick={insertProject}>New</button>
-            <button onClick={duplicateProject} disabled={!selected}>Duplicate</button>
+            <button onClick={insertProject}><Plus size={14} /> 新建</button>
+            <button onClick={duplicateProject} disabled={!selected}><Copy size={14} /> 复制</button>
           </div>
-          {projects.map(project => (
-            <button
-              key={project.id}
-              className={project.id === selected?.id ? 'active' : ''}
-              onClick={() => setSelectedId(project.id)}
-            >
-              <img src={project.cover} alt="" />
-              <span>
-                <strong>{project.title}</strong>
-                <small>{project.archived ? 'Archived' : project.subtitle}</small>
-              </span>
-            </button>
-          ))}
+          {projects.length === 0 ? (
+            <p className="empty">暂无项目</p>
+          ) : (
+            projects.map(project => (
+              <button
+                key={project.id}
+                className={project.id === selected?.id ? 'active' : ''}
+                onClick={() => setSelectedId(project.id)}
+              >
+                <img src={portfolioAssetUrl(project.cover)} alt="" />
+                <span>
+                  <strong>{project.title}</strong>
+                  <small>{project.archived ? '已归档' : project.subtitle}</small>
+                </span>
+              </button>
+            ))
+          )}
         </aside>
 
         {selected && (
@@ -384,56 +502,56 @@ export default function App() {
             <div className="editor-head">
               <h2>{selected.title}</h2>
               <div>
-                <button onClick={() => moveProject(-1)}>Up</button>
-                <button onClick={() => moveProject(1)}>Down</button>
-                <button onClick={() => removeProject(true)}>Archive</button>
-                <button className="danger" onClick={() => removeProject(false)}>Delete</button>
+                <button onClick={() => moveProject(-1)}><ArrowUp size={14} /> 上移</button>
+                <button onClick={() => moveProject(1)}><ArrowDown size={14} /> 下移</button>
+                <button onClick={() => removeProject(true)}><Archive size={14} /> {selected.archived ? '取消归档' : '归档'}</button>
+                <button className="danger" onClick={() => removeProject(false)}><Trash2 size={14} /> 删除</button>
               </div>
             </div>
 
             <div className="form-grid">
-              <label>Title<input value={selected.title} onChange={event => updateSelected(project => { project.title = event.target.value; })} /></label>
-              <label>Subtitle<input value={selected.subtitle} onChange={event => updateSelected(project => { project.subtitle = event.target.value; })} /></label>
-              <label>Range<input value={selected.range ?? ''} onChange={event => updateSelected(project => { project.range = event.target.value; })} /></label>
-              <label>Accent
+              <label>标题<input value={selected.title} onChange={event => updateSelected(project => { project.title = event.target.value; })} /></label>
+              <label>副标题<input value={selected.subtitle} onChange={event => updateSelected(project => { project.subtitle = event.target.value; })} /></label>
+              <label>编号<input value={selected.range ?? ''} onChange={event => updateSelected(project => { project.range = event.target.value; })} /></label>
+              <label>强调色
                 <select value={selected.accent} onChange={event => updateSelected(project => { project.accent = event.target.value as PortfolioSlide['accent']; })}>
-                  <option value="teal">teal</option>
-                  <option value="gold">gold</option>
-                  <option value="black">black</option>
+                  <option value="teal">青色</option>
+                  <option value="gold">金色</option>
+                  <option value="black">墨色</option>
                 </select>
               </label>
-              <label className="wide">Summary<textarea value={selected.summary ?? ''} onChange={event => updateSelected(project => { project.summary = event.target.value; })} /></label>
-              <label className="wide">Role<textarea value={selected.role ?? ''} onChange={event => updateSelected(project => { project.role = event.target.value; })} /></label>
-              <label className="wide">Problem<textarea value={selected.problem ?? ''} onChange={event => updateSelected(project => { project.problem = event.target.value; })} /></label>
-              <label className="wide">Output<textarea value={selected.output ?? ''} onChange={event => updateSelected(project => { project.output = event.target.value; })} /></label>
-              <label>Tools<input value={selected.tools ?? ''} onChange={event => updateSelected(project => { project.tools = event.target.value; })} /></label>
-              <label>Tags<input value={(selected.tags ?? []).join(', ')} onChange={event => updateSelected(project => { project.tags = event.target.value.split(',').map(tag => tag.trim()).filter(Boolean); })} /></label>
-              <label className="wide">AI Role<textarea value={selected.aiRole ?? ''} onChange={event => updateSelected(project => { project.aiRole = event.target.value; })} /></label>
+              <label className="wide">摘要<textarea value={selected.summary ?? ''} onChange={event => updateSelected(project => { project.summary = event.target.value; })} /></label>
+              <label className="wide">角色 / 职责<textarea value={selected.role ?? ''} onChange={event => updateSelected(project => { project.role = event.target.value; })} /></label>
+              <label className="wide">问题<textarea value={selected.problem ?? ''} onChange={event => updateSelected(project => { project.problem = event.target.value; })} /></label>
+              <label className="wide">产出<textarea value={selected.output ?? ''} onChange={event => updateSelected(project => { project.output = event.target.value; })} /></label>
+              <label>工具<input value={selected.tools ?? ''} onChange={event => updateSelected(project => { project.tools = event.target.value; })} /></label>
+              <label>标签<input value={(selected.tags ?? []).join(', ')} onChange={event => updateSelected(project => { project.tags = event.target.value.split(',').map(tag => tag.trim()).filter(Boolean); })} /></label>
+              <label className="wide">AI 作用<textarea value={selected.aiRole ?? ''} onChange={event => updateSelected(project => { project.aiRole = event.target.value; })} /></label>
             </div>
 
             <div className="media-editor">
-              <img src={selected.cover} alt={selected.title} />
+              <img src={portfolioAssetUrl(selected.cover)} alt={selected.title} />
               <label className="upload">
-                Replace cover
+                <ImagePlus size={14} /> 替换封面
                 <input type="file" accept="image/jpeg,image/png,image/webp" onChange={event => {
                   const file = event.target.files?.[0];
-                  if (file) uploadCover(file).catch(err => setError(err instanceof Error ? err.message : String(err)));
+                  if (file) uploadCover(file);
                 }} />
               </label>
             </div>
 
-            <h3>Tabs</h3>
+            <h3>标签页</h3>
             <div className="tabs-editor">
               {(selected.tabs ?? []).map((tab, index) => (
                 <label key={tab.id}>
-                  {tab.label}
+                  <span className="tab-label">{tab.label}</span>
                   <input value={tab.title} onChange={event => updateSelected(project => { if (project.tabs?.[index]) project.tabs[index].title = event.target.value; })} />
                   <textarea value={tab.body} onChange={event => updateSelected(project => { if (project.tabs?.[index]) project.tabs[index].body = event.target.value; })} />
                 </label>
               ))}
             </div>
 
-            <h3>Gallery</h3>
+            <h3>图库</h3>
             <div className="gallery-editor">
               {(selected.gallery ?? []).map((item, index) => (
                 <label key={`${item.src}-${index}`}>
@@ -443,34 +561,57 @@ export default function App() {
                 </label>
               ))}
               <button onClick={() => updateSelected(project => {
-                project.gallery = [...(project.gallery ?? []), { src: project.cover ?? './project-1.jpg', label: 'NEW IMAGE', caption: 'Caption', evidenceType: 'Evidence' }];
-              })}>Add gallery item</button>
+                project.gallery = [...(project.gallery ?? []), { src: project.cover ?? './project-1.jpg', label: '新图片', caption: '图片说明', evidenceType: '证据' }];
+              })}><Plus size={14} /> 添加图片</button>
             </div>
 
-            {selectedGravity && <p className="sync-note">Antigravity project is synced for: {selectedGravity.title}</p>}
+            {selectedGravity && <p className="sync-note">Antigravity 项目已同步：{selectedGravity.title}</p>}
           </section>
         )}
 
         <aside className="preview">
           <div className="preview-actions">
-            <button className={previewMode === 'desktop' ? 'active' : ''} onClick={() => setPreviewMode('desktop')}>Desktop</button>
-            <button className={previewMode === 'mobile' ? 'active' : ''} onClick={() => setPreviewMode('mobile')}>Mobile</button>
+            <button className={previewMode === 'desktop' ? 'active' : ''} onClick={() => setPreviewMode('desktop')}>
+              <Monitor size={14} /> 电脑
+            </button>
+            <button className={previewMode === 'mobile' ? 'active' : ''} onClick={() => setPreviewMode('mobile')}>
+              <Smartphone size={14} /> 手机
+            </button>
           </div>
-          <iframe className={previewMode} src={previewUrl} title="Portfolio preview" />
+          <div className={`preview-frame ${previewMode}`}>
+            <div className="preview-chrome">
+              <span className="preview-title">{previewMode === 'desktop' ? '电脑 1440 × 900' : '手机 390 × 844'}</span>
+              <a href={previewUrl} target="_blank" rel="noreferrer">↗ 新窗口打开</a>
+            </div>
+            <iframe className={previewMode} src={previewUrl} title="作品集预览" />
+          </div>
           <div className="publish-actions">
-            <button className="primary" onClick={() => saveDraft().catch(err => setError(err instanceof Error ? err.message : String(err)))} disabled={!dirty}>Save draft</button>
-            <button onClick={() => publish().catch(err => setError(err instanceof Error ? err.message : String(err)))}>Publish PR</button>
-            <button onClick={loadAudit}>Audit log</button>
-            <button className="danger" onClick={invalidateSessions}>Kick sessions</button>
+            <button className="primary" onClick={saveDraft} disabled={!dirty}>
+              <Save size={14} /> 保存草稿
+            </button>
+            <button onClick={publish} disabled={!contentInfo?.pr}>
+              <Send size={14} /> 发布合并
+            </button>
+            <button onClick={loadAudit}>
+              <History size={14} /> 审计日志
+            </button>
+            <button className="danger" onClick={invalidateSessions}>
+              <ShieldAlert size={14} /> 退出所有会话
+            </button>
           </div>
-          <pre className="diff">{JSON.stringify({ branch: contentInfo?.branch, baseSha: contentInfo?.contentSha, dirty }, null, 2)}</pre>
+          <dl className="draft-meta">
+            <div><dt>草稿分支</dt><dd>{contentInfo?.branch ?? '尚未加载'}</dd></div>
+            <div><dt>基础分支</dt><dd>{contentInfo?.baseBranch ?? '尚未加载'}</dd></div>
+            <div><dt>内容版本</dt><dd>{contentInfo?.contentSha?.slice(0, 12) ?? '尚未创建'}</dd></div>
+            <div><dt>保存状态</dt><dd>{dirty ? '有未保存修改' : '已同步'}</dd></div>
+          </dl>
           {auditEvents.length > 0 && (
             <div className="audit-list">
               {auditEvents.map(event => (
                 <div key={event.id}>
-                  <strong>{event.action}</strong>
+                  <strong>{auditActionLabel(event.action)}</strong>
                   <span>{event.actor.login} / {event.target}</span>
-                  <small>{new Date(event.timestamp).toLocaleString()}</small>
+                  <small>{new Date(event.timestamp).toLocaleString('zh-CN')}</small>
                 </div>
               ))}
             </div>

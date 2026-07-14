@@ -5,6 +5,7 @@ import { ApiError, getOptionalEnv, getRequiredEnv } from './http';
 
 const CONTENT_PATH = 'app/src/content/portfolio.json';
 const DRAFT_BRANCH = 'portfolio-admin-draft';
+export const MISSING_SHA = 'missing_sha_sentinel';
 
 interface GitHubContentResponse {
   sha: string;
@@ -17,6 +18,7 @@ export interface DraftInfo {
   baseBranch: string;
   contentSha: string;
   content: PortfolioContent;
+  warning?: string;
   pr?: {
     number: number;
     htmlUrl: string;
@@ -89,7 +91,7 @@ export async function ensureDraftBranch() {
   return DRAFT_BRANCH;
 }
 
-export async function getFileContent(branch: string) {
+export async function getFileContent(branch: string): Promise<{ sha: string; content: PortfolioContent; warning?: string }> {
   const { owner, name } = repo();
   const file = await github<GitHubContentResponse>(
     `/repos/${owner}/${name}/contents/${CONTENT_PATH}?ref=${encodeURIComponent(branch)}`,
@@ -139,9 +141,19 @@ async function getNetlifyPreviewUrl(sha: string) {
 export async function getDraftInfo(): Promise<DraftInfo> {
   const { baseBranch } = repo();
   const branch = await ensureDraftBranch();
-  const { sha, content } = await getFileContent(branch).catch(async error => {
+
+  const file = await getFileContent(branch).catch(async error => {
     if (error instanceof ApiError && error.status === 404) {
-      return await getFileContent(baseBranch);
+      return await getFileContent(baseBranch).catch(baseError => {
+        if (baseError instanceof ApiError && baseError.status === 404) {
+          return {
+            sha: MISSING_SHA,
+            content: fallbackPortfolioContent(),
+            warning: '远端仓库尚无 portfolio.json，已加载本地默认内容。首次保存将自动创建该文件。',
+          };
+        }
+        throw baseError;
+      });
     }
     throw error;
   });
@@ -149,8 +161,9 @@ export async function getDraftInfo(): Promise<DraftInfo> {
   return {
     branch,
     baseBranch,
-    contentSha: sha,
-    content,
+    contentSha: file.sha,
+    content: file.content,
+    warning: file.warning,
     pr: await findDraftPullRequest(),
   };
 }
@@ -158,18 +171,44 @@ export async function getDraftInfo(): Promise<DraftInfo> {
 export async function writePortfolioContent(content: PortfolioContent, baseSha: string) {
   const { owner, name } = repo();
   const branch = await ensureDraftBranch();
+
   const current = await getFileContent(branch).catch(async error => {
     if (error instanceof ApiError && error.status === 404) {
-      return await getFileContent(repo().baseBranch);
+      return await getFileContent(repo().baseBranch).catch(baseError => {
+        if (baseError instanceof ApiError && baseError.status === 404) {
+          return { sha: MISSING_SHA, content: fallbackPortfolioContent() };
+        }
+        throw baseError;
+      });
     }
     throw error;
   });
+
+  const body = JSON.stringify(portfolioContentSchema.parse(content), null, 2) + '\n';
+
+  if (baseSha === MISSING_SHA) {
+    if (current.sha !== MISSING_SHA) {
+      throw new ApiError(409, 'stale_draft', 'Draft has changed. Refresh before saving again.');
+    }
+    const result = await github<{ content: { sha: string }; commit: { sha: string } }>(
+      `/repos/${owner}/${name}/contents/${CONTENT_PATH}`,
+      {
+        method: 'PUT',
+        body: JSON.stringify({
+          message: 'Create portfolio content from admin',
+          content: Buffer.from(body, 'utf8').toString('base64'),
+          branch,
+        }),
+      },
+    );
+    const pr = await ensureDraftPullRequest();
+    return { branch, contentSha: result.content.sha, commitSha: result.commit.sha, pr };
+  }
 
   if (current.sha !== baseSha) {
     throw new ApiError(409, 'stale_draft', 'Draft has changed. Refresh before saving again.');
   }
 
-  const body = JSON.stringify(portfolioContentSchema.parse(content), null, 2) + '\n';
   const result = await github<{ content: { sha: string }; commit: { sha: string } }>(
     `/repos/${owner}/${name}/contents/${CONTENT_PATH}`,
     {
